@@ -1,4 +1,4 @@
-import { Module, forwardRef } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { AuthService } from './auth.service';
@@ -8,23 +8,16 @@ import { JwtStrategy } from './jwt.strategy';
 import { ConfigModule } from 'src/config/config.module';
 import { ConfigService } from 'src/config/config.service';
 
-// TODO: Replase with app.config
-export const jwtConstants = {
-  secret: 'sd7ifyb8s7ya8sy87dsfm7',
-};
-
-console.log('forwardRef:', forwardRef(() => ConfigModule));
-
-
 @Module({
   imports: [
+    ConfigModule,
     UsersModule,
     PassportModule,
     JwtModule.registerAsync({
-      imports: [forwardRef(() => ConfigModule)],
+      imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: () => ({
-        secret: 'asdsad',
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get('jwtSecret'),
         signOptions: { expiresIn: '60s' },
       }),
     })
