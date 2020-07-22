@@ -1,9 +1,9 @@
-export type User = {
+export interface IUser {
   id: string
   username: string
   password: string
 }
 
-export type UserCreateParam = Pick<User, 'username' | 'password'>
+export type UserCreateParam = Pick<IUser, 'username' | 'password'>
 
-export type UserView = Omit<User, 'password'>
+export type UserView = Omit<IUser, 'password'>

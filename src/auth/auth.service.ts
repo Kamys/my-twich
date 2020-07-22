@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
-import { UserCreateParam, User, UserView } from 'src/users/types';
+import { UserCreateParam, IUser, UserView } from 'src/users/types';
 
 @Injectable()
 export class AuthService {
@@ -27,7 +27,7 @@ export class AuthService {
     };
   }
 
-  async registration(param: UserCreateParam): Promise<User> {
+  async registration(param: UserCreateParam): Promise<IUser> {
     const isUsernameExist = await this.usersService.isUsernameExist(param.username)
     if (isUsernameExist) {
       throw new BadRequestException('User already exist')
@@ -41,7 +41,7 @@ export class AuthService {
     return newUser
   }
 
-  login(user: User) {
+  login(user: IUser) {
     return {
       access_token: this.jwtService.sign(user),
     };
