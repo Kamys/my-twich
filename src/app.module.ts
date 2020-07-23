@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { User } from './users/user.entity';
 
+// TODO: Get TypeOrmModule setting from ConfigService
 @Module({
   imports: [AuthModule, UsersModule, TypeOrmModule.forRoot({
     type: 'postgres',

@@ -4,6 +4,10 @@ export interface IUser {
   password: string
 }
 
-export type UserCreateParam = Pick<IUser, 'username' | 'password'>
+export type UserCredentials = Pick<IUser, 'username' | 'password'>
 
 export type UserView = Omit<IUser, 'password'>
+
+export type ResponseJWTToken = {
+  access_token: string
+}

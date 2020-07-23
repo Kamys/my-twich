@@ -11,4 +11,7 @@ export class User implements IUser {
 
   @Column()
   password: string;
+
+  @Column({ nullable: true })
+  streamKey: string;
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { UserCreateParam } from './types';
+import { UserCredentials, UserView } from './types';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
@@ -15,14 +15,17 @@ export class UsersService {
     return this.usersRepository.findOne({ username });
   }
 
-  async create({username, password}: UserCreateParam): Promise<User> {
-    const newUser = { id: new Date().valueOf().toString(), username, password };
-    await this.usersRepository.insert(newUser)
+  async create({username, password}: UserCredentials): Promise<UserView> {
+    const newUser = await this.usersRepository.create({ username, password })
+    await this.usersRepository.save(newUser);
+
     return newUser
   }
 
-  async isUsernameExist(username: string): Promise<boolean> {
-    const user = await this.findOne(username);
+  async isValidStreamKey(streamKey: string): Promise<boolean> {
+    console.log('UsersService.isValidStreamKey');
+    const user = await this.usersRepository.findOne({ streamKey });
+
     return !!user
   }
 }
