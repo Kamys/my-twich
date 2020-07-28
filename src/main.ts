@@ -5,12 +5,12 @@ import { UsersService } from './users/users.service';
 
 const bootstrap = async () => {
   const app = await NestFactory.create(AppModule);
-  const usersService = app.get(UsersService)
+  // app.enableCors();
+  const usersService = app.get(UsersService);
   await app.listen(3000);
 
-
-  const nms = new NodeMediaServer(usersService)
-  nms.init()
+  const nms = new NodeMediaServer(usersService);
+  nms.init();
 };
 
 bootstrap();

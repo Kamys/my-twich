@@ -5,10 +5,11 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { User } from './users/user.entity';
+import { MediaModule } from './media/media.module';
 
 // TODO: Get TypeOrmModule setting from ConfigService
 @Module({
-  imports: [AuthModule, UsersModule, TypeOrmModule.forRoot({
+  imports: [MediaModule, AuthModule, UsersModule, TypeOrmModule.forRoot({
     type: 'postgres',
     host: 'localhost',
     port: 5432,

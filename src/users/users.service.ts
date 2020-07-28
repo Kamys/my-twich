@@ -12,20 +12,28 @@ export class UsersService {
   ) {}
 
   async findOne(username: string): Promise<User | undefined> {
-    return this.usersRepository.findOne({ username });
+    return this.usersRepository.findOne({
+      username: username.toLocaleLowerCase(),
+    });
   }
 
-  async create({username, password}: UserCredentials): Promise<UserView> {
-    const newUser = await this.usersRepository.create({ username, password })
+  async getAllStreamers(): Promise<User[] | undefined> {
+    return this.usersRepository.find({ isBroadcastOnline: true });
+  }
+
+  async create({ username, password }: UserCredentials): Promise<UserView> {
+    const newUser = await this.usersRepository.create({
+      username: username.toLocaleLowerCase(),
+      password,
+    });
     await this.usersRepository.save(newUser);
 
-    return newUser
+    return newUser;
   }
 
   async isValidStreamKey(streamKey: string): Promise<boolean> {
-    console.log('UsersService.isValidStreamKey');
     const user = await this.usersRepository.findOne({ streamKey });
 
-    return !!user
+    return !!user;
   }
 }

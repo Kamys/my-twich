@@ -14,4 +14,7 @@ export class User implements IUser {
 
   @Column({ nullable: true })
   streamKey: string;
+
+  @Column({ default: false })
+  isBroadcastOnline: boolean;
 }
