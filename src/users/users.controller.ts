@@ -1,22 +1,21 @@
-import { Controller, Post, UseGuards, Body, Request } from '@nestjs/common';
+import { Controller, UseGuards, Body, Patch } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { UserCredentials, UserJwtPayload } from './users.types';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { User } from '../auth/auth.helpers';
+import { UserJwtPayload } from '../auth/auth.types';
 
-// TODO: Move to user module
-@Controller()
+@Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Post('users/me/broadcast/status')
+  @Patch('me')
   async setBroadcastStatus(
-    @Request() req,
-    @Body('status') status: boolean,
+    @User() user: UserJwtPayload,
+    @Body('isBroadcastOnline') isBroadcastOnline: boolean,
   ): Promise<void> {
-    console.log('setBroadcastStatus ', req.user);
-    const user: UserJwtPayload = req.user;
     const { username } = user;
-    return this.usersService.setBroadcastStatus(username, status);
+
+    return this.usersService.setIsBroadcastOnline(username, isBroadcastOnline);
   }
 }

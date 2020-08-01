@@ -37,7 +37,7 @@ export class UsersService {
     return !!user;
   }
 
-  async setBroadcastStatus(username: string, status: boolean): Promise<void> {
+  async setIsBroadcastOnline(username: string, status: boolean): Promise<void> {
     const user = await this.usersRepository.findOne({ username });
 
     if (!user) {
