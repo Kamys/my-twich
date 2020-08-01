@@ -12,11 +12,11 @@ import {
 import { UsersService } from '../users/users.service';
 import { validateMediaFileName } from './media.helpers';
 
-@Controller()
+@Controller('media')
 export class MediaController {
   constructor(private usersService: UsersService) {}
 
-  @Get('media/broadcast/:userName/:fileName')
+  @Get('broadcasts/:userName/:fileName')
   async getByUser(
     @Req() req: Request,
     @Res() res: Response,
@@ -42,11 +42,12 @@ export class MediaController {
     );
   }
 
-  @Get('media/broadcast')
+  @Get('broadcasts')
   async getAll(): Promise<any> {
     const users = await this.usersService.getAllStreamers();
     return users.map(user => {
       return {
+        id: user.id,
         username: user.username,
       };
     });
