@@ -1,8 +1,9 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
-import { IUser } from './types';
+import { IUser } from './users.types';
+import { BaseEntity } from 'typeorm/index';
 
 @Entity()
-export class User implements IUser {
+export class User extends BaseEntity implements IUser {
   @PrimaryGeneratedColumn()
   id: string;
 

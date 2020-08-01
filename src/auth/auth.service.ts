@@ -2,13 +2,19 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
-import { UserCredentials, UserView, ResponseJWTToken } from 'src/users/types';
+import {
+  UserCredentials,
+  UserView,
+  ResponseJWTToken,
+} from 'src/users/users.types';
 import { PostgresErrorCode } from '../database/postgresErrorCodes.enum';
 
 @Injectable()
 export class AuthService {
-  constructor(private usersService: UsersService, private jwtService: JwtService) {
-  }
+  constructor(
+    private usersService: UsersService,
+    private jwtService: JwtService,
+  ) {}
 
   async validateUser(username: string, password: string): Promise<UserView> {
     const user = await this.usersService.findOne(username);
@@ -39,10 +45,16 @@ export class AuthService {
       return newUser;
     } catch (error) {
       if (error?.code === PostgresErrorCode.UniqueViolation) {
-        throw new HttpException('User with that name already exists', HttpStatus.BAD_REQUEST);
+        throw new HttpException(
+          'User with that name already exists',
+          HttpStatus.BAD_REQUEST,
+        );
       }
       console.log(error);
-      throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        'Something went wrong',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 

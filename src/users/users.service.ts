@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
-import { UserCredentials, UserView } from './types';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { UserCredentials, UserView } from './users.types';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from './user.entity';
+import { User } from './users.entity';
 
 @Injectable()
 export class UsersService {
@@ -35,5 +35,18 @@ export class UsersService {
     const user = await this.usersRepository.findOne({ streamKey });
 
     return !!user;
+  }
+
+  async setBroadcastStatus(username: string, status: boolean): Promise<void> {
+    const user = await this.usersRepository.findOne({ username });
+
+    if (!user) {
+      throw new NotFoundException(
+        `User with username "${username}" not found!`,
+      );
+    }
+
+    user.isBroadcastOnline = status;
+    await user.save();
   }
 }

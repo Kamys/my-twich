@@ -7,6 +7,7 @@ import { LocalStrategy } from './local.strategy';
 import { JwtStrategy } from './jwt.strategy';
 import { ConfigModule } from '../config/config.module';
 import { ConfigService } from '../config/config.service';
+import { AuthController } from './auth.controller';
 
 @Module({
   imports: [
@@ -20,8 +21,9 @@ import { ConfigService } from '../config/config.service';
         secret: configService.get('jwtSecret'),
         signOptions: { expiresIn: '60s' },
       }),
-    })
+    }),
   ],
+  controllers: [AuthController],
   providers: [AuthService, LocalStrategy, JwtStrategy],
   exports: [AuthService],
 })
