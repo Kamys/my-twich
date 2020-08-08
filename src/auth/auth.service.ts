@@ -1,9 +1,9 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { UsersService } from '../users/users.service';
-import { UserCredentials, UserView } from 'src/users/users.types';
-import { PostgresErrorCode } from '../database/postgresErrorCodes.enum';
+import { UsersService } from '@/users/users.service';
+import { UserCredentials, UserView } from '@/users/users.types';
+import { PostgresErrorCode } from '@/database/postgresErrorCodes.enum';
 import { ResponseJWTToken } from './auth.types';
 
 @Injectable()
