@@ -9,19 +9,19 @@ import {
   NotFoundException,
   BadRequestException,
 } from '@nestjs/common';
-import { UsersService } from '../users/users.service';
+import { UsersService } from '@/users/users.service';
 import { validateMediaFileName } from './media.helpers';
+import { ConfigService } from '@/config/config.service';
 
 @Controller('media')
 export class MediaController {
-  constructor(private usersService: UsersService) {}
+  constructor(
+    private usersService: UsersService,
+    private configService: ConfigService,
+  ) {}
 
   @Get('broadcasts/:userName/:fileName')
-  async getByUser(
-    @Req() req: Request,
-    @Res() res: Response,
-    @Param() params,
-  ): Promise<void> {
+  async getByUser(@Res() res: Response, @Param() params): Promise<void> {
     const { userName, fileName } = params;
     const user = await this.usersService.findOne(userName);
 
@@ -51,5 +51,25 @@ export class MediaController {
         username: user.username,
       };
     });
+  }
+
+  @Get('thumbnail/:userName')
+  async getStreamThumbnail(
+    @Param() params,
+    @Res() res: Response,
+  ): Promise<any> {
+    const { userName } = params;
+    const user = await this.usersService.findOne(userName);
+    if (!user) {
+      throw new NotFoundException(`Not found user with username ${userName}`);
+    }
+    res.sendFile(
+      path.join(
+        __dirname,
+        `../../media/live/`,
+        user.streamKey,
+        `${user.streamKey}.png`,
+      ),
+    );
   }
 }

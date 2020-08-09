@@ -6,14 +6,14 @@ declare module 'node-media-server' {
   };
 
   class NMServer {
-    constructor(config: NMServer.Config);
+    constructor(config: NMServer.NodeMediaServerConfig);
     on: (eventName: EventNames, callback: EventCallback) => void;
     run: () => void;
     getSession: (id: string) => Session;
   }
 
   namespace NMServer {
-    type Config = {
+    type NodeMediaServerConfig = {
       auth: {
         api: boolean;
         play?: boolean;
