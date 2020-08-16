@@ -1,24 +1,36 @@
 import * as childProcess from 'child_process';
 import * as path from 'path';
+import * as fs from 'fs';
 
 type GenerateStreamThumbnailParams = {
   streamKey: string;
   pathToFfmpeg: string;
-  mediaroot: string;
-  app: string;
+  fullPathToBroadcasts: string;
+};
+
+export const getRootPath = (): string => {
+  const pathToSrc = path.dirname(
+    require.main.filename || process.mainModule.filename,
+  );
+
+  return path.join(pathToSrc, '..');
+};
+
+const createDirIfNotExist = (dir: string) => {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir);
+  }
 };
 
 export const generateStreamThumbnail = (
   param: GenerateStreamThumbnailParams,
 ): void => {
-  const { streamKey, pathToFfmpeg, mediaroot, app } = param;
-  console.log(`generateStreamThumbnail: ${streamKey}`);
-  const pathToThumbnails = path.join(
-    mediaroot,
-    app,
-    streamKey,
-    `${streamKey}.png`,
-  );
+  const { streamKey, pathToFfmpeg, fullPathToBroadcasts } = param;
+
+  const pathToBroadcast = path.join(fullPathToBroadcasts, streamKey);
+  const pathToThumbnails = path.join(pathToBroadcast, `thumbnail.png`);
+
+  createDirIfNotExist(pathToBroadcast);
 
   const args = [
     '-y',

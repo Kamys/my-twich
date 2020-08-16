@@ -1,18 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import { NodeMediaServerConfig } from 'node-media-server';
+import * as path from 'path';
 
 type AppConfigData = {
   jwtSecret: string;
   nodeMediaServer: NodeMediaServerConfig;
+  fullPathToBroadcasts: string;
 };
 
-// TOOD: load security config from .env
+// TODO: load security config from .env
 @Injectable()
 export class ConfigService {
   private readonly config: AppConfigData;
 
   constructor() {
+    const fullPathToMedia = path.resolve('media');
+    const taskAppName = 'live';
+    const fullPathToBroadcasts = path.join(fullPathToMedia, taskAppName);
+
     this.config = {
+      fullPathToBroadcasts,
       jwtSecret: 'qw8eyrv36q7ry4098&T&^yn09m8dfu',
       nodeMediaServer: {
         auth: {
@@ -27,7 +34,7 @@ export class ConfigService {
         },
         http: {
           port: 8888,
-          mediaroot: './media',
+          mediaroot: fullPathToMedia,
           allow_origin: 'http://localhost/',
           api: false,
         },
@@ -35,7 +42,7 @@ export class ConfigService {
           ffmpeg: '/usr/bin/ffmpeg',
           tasks: [
             {
-              app: 'live',
+              app: taskAppName,
               hls: true,
               hlsFlags:
                 '[hls_time=2:hls_list_size=3:hls_flags=delete_segments]',

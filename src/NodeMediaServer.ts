@@ -24,25 +24,26 @@ export class NodeMediaServer {
       );
       const streamKey = NodeMediaServer.getStreamKeyFromStreamPath(streamPath);
       const isValidStreamKey = await this.isValidStreamKey(streamKey);
-      if (!isValidStreamKey) {
-        console.log(`invalid stream key "${streamKey}"`);
+      if (isValidStreamKey) {
+        this.generateStreamThumbnail(streamKey);
+      } else {
         const session = this.nms.getSession(id);
         session.reject();
-      } else {
-        this.generateStreamThumbnail(streamKey);
       }
     });
   }
 
   private generateStreamThumbnail(streamKey: string) {
-    const { trans, http } = this.configService.get('nodeMediaServer');
+    const fullPathToBroadcasts = this.configService.get('fullPathToBroadcasts');
+    const { trans } = this.configService.get('nodeMediaServer');
 
-    generateStreamThumbnail({
-      streamKey,
-      pathToFfmpeg: trans.ffmpeg,
-      mediaroot: http.mediaroot,
-      app: trans.tasks[0].app,
-    });
+    setTimeout(() => {
+      generateStreamThumbnail({
+        streamKey,
+        pathToFfmpeg: trans.ffmpeg,
+        fullPathToBroadcasts,
+      });
+    }, 5000);
   }
 
   private async isValidStreamKey(streamKey: string): Promise<boolean> {

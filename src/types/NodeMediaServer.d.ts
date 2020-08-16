@@ -1,6 +1,6 @@
 declare module 'node-media-server' {
   type EventCallback = (id: string, streamPath: string, args: any) => void;
-  type EventNames = 'prePublish';
+  type EventNames = 'prePublish' | 'postPublish' | 'donePublish';
   type Session = {
     reject: () => void;
   };

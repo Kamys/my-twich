@@ -1,11 +1,11 @@
 import * as path from 'path';
-import { Response, Request } from 'express';
+import * as fs from 'fs';
+import { Response } from 'express';
 import {
   Controller,
   Get,
   Param,
   Res,
-  Req,
   NotFoundException,
   BadRequestException,
 } from '@nestjs/common';
@@ -21,7 +21,10 @@ export class MediaController {
   ) {}
 
   @Get('broadcasts/:userName/:fileName')
-  async getByUser(@Res() res: Response, @Param() params): Promise<void> {
+  async getByUser(
+    @Res() res: Response,
+    @Param() params: { userName: string; fileName: string },
+  ): Promise<void> {
     const { userName, fileName } = params;
     const user = await this.usersService.findOne(userName);
 
@@ -37,9 +40,19 @@ export class MediaController {
       throw new BadRequestException(`User "${userName}" not streaming now`);
     }
 
-    res.sendFile(
-      path.join(__dirname, `../../media/live/`, user.streamKey, fileName),
+    const fullPathToBroadcasts = this.configService.get('fullPathToBroadcasts');
+
+    const fullPathToRequestFile = path.join(
+      fullPathToBroadcasts,
+      user.streamKey,
+      fileName,
     );
+
+    if (!fs.existsSync(fullPathToRequestFile)) {
+      throw new NotFoundException(`File ${fileName} not found.`);
+    }
+
+    res.sendFile(fullPathToRequestFile);
   }
 
   @Get('broadcasts')
@@ -51,25 +64,5 @@ export class MediaController {
         username: user.username,
       };
     });
-  }
-
-  @Get('thumbnail/:userName')
-  async getStreamThumbnail(
-    @Param() params,
-    @Res() res: Response,
-  ): Promise<any> {
-    const { userName } = params;
-    const user = await this.usersService.findOne(userName);
-    if (!user) {
-      throw new NotFoundException(`Not found user with username ${userName}`);
-    }
-    res.sendFile(
-      path.join(
-        __dirname,
-        `../../media/live/`,
-        user.streamKey,
-        `${user.streamKey}.png`,
-      ),
-    );
   }
 }
